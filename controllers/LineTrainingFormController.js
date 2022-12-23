@@ -167,8 +167,19 @@ export const AddLineTrainingForm = async (req, res) => {
 
 
 export const TablesLineTraining = async (req, res) => {
+    const {PerPage,From}= req.query;
+
     try {
-        const Data = await LineTrainingFormModel.find().select("User_Name Name createdAt ").sort({createdAt:-1})
+        const Data = await LineTrainingFormModel.find().select("User_Name Name createdAt ").sort({createdAt:-1}).limit(PerPage).skip(From)
+        res.status(200).json(Data)
+    } catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+}
+
+export const TablesLineTrainingID = async (req, res) => {
+    try {
+        const Data = await LineTrainingFormModel.find().select("_id")
         res.status(200).json(Data)
     } catch (error) {
         res.status(404).json({ message: error.message })
@@ -176,8 +187,17 @@ export const TablesLineTraining = async (req, res) => {
 }
 
 export const TablesDetailsTraining = async (req, res) => {
+    const {PerPage,From}= req.query;
     try {
-        const Data = await FlightDetailsform.find().select("User_Name FlightDetails createdAt ").sort({createdAt:-1})
+        const Data = await FlightDetailsform.find().select("User_Name FlightDetails createdAt ").sort({createdAt:-1}).limit(PerPage).skip(From)
+        res.status(200).json(Data)
+    } catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+}
+export const TablesDetailsTrainingID= async (req, res) => {
+    try {
+        const Data = await FlightDetailsform.find().select("_id")
         res.status(200).json(Data)
     } catch (error) {
         res.status(404).json({ message: error.message })
@@ -342,7 +362,7 @@ export const ADD_FLIGHT_DETAILS_FORM = async (req, res) => {
 
             signPadTraineeData,
             signPadIPData,
-            signPadTMData,} = req.body;
+            signPadTMData} = req.body;
 
     const newIncome = new FlightDetailsform({ User_Id, 
         User_Name, 
@@ -459,7 +479,7 @@ export const ADD_FLIGHT_DETAILS_FORM = async (req, res) => {
 
             signPadTraineeData,
             signPadIPData,
-            signPadTMData, })
+            signPadTMData })
     try {
         await newIncome.save()
         res.status(201).json(newIncome)
